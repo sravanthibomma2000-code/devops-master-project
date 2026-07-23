@@ -1,15 +1,34 @@
-## Day 1 - Spring Boot REST API
 
-### Features
-- Spring Boot Project Created
-- REST Controller
-- Home Endpoint
-- Hello Endpoint
+# DevOps Master Project
 
-### Endpoints
+## Tech Stack
+- Java 21
+- Spring Boot
+- Maven
+- Docker
+- Jenkins
+- SonarQube
+- Kubernetes
+- Git & GitHub
 
-GET /
-Welcome to DevOps Master Project!
+## CI/CD Flow
 
-GET /hello
-Hello Sravanthi! Spring Boot is Working.
+GitHub
+   ↓
+Jenkins
+   ↓
+Maven
+   ↓
+Docker
+   ↓
+Docker Hub
+   ↓
+Kubernetes
+
+## Kubernetes
+- Deployment
+- ReplicaSet
+- NodePort Service
+
+## Result
+Application successfully deployed on Kubernetes using Minikube.
