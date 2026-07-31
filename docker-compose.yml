@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+
+  eureka-server:
+    image: devops/eureka-server:1.0
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    restart: unless-stopped
+
+  config-server:
+    image: devops/config-server:1.0
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - eureka-server
+    restart: unless-stopped
+
+  iot-platform:
+    image: devops/iot-platform:1.0
+    container_name: iot-platform
+    ports:
+      - "8081:8081"
+    depends_on:
+      - config-server
+      - eureka-server
+    restart: unless-stopped
+
+  api-gateway:
+    image: devops/api-gateway:1.0
+    container_name: api-gateway
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - eureka-server
+      - iot-platform
+    restart: unless-stopped
