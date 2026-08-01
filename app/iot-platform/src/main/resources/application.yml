@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: iot-platform
+  config:
+    import: optional:configserver:http://config-server:8888
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
