@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         SCANNER_HOME = tool 'SonarScanner'
-        IMAGE_NAME = "sravanthibomma2000/iot-platform"
+        IMAGE_NAME = 'sravanthibomma2000/iot-platform'
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
@@ -58,18 +58,19 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-
-                    sh '''
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                    docker push '"${IMAGE_NAME}:${IMAGE_TAG}"'
-                    docker push '"${IMAGE_NAME}:latest"'
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    sh """
+                    echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
+                    docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                    docker push ${IMAGE_NAME}:latest
                     docker logout
-                    '''
+                    """
                 }
             }
         }
@@ -77,17 +78,17 @@ pipeline {
 
     post {
         success {
-            echo "=================================="
-            echo "CI/CD Pipeline Completed Successfully!"
+            echo "========================================"
+            echo "Pipeline Completed Successfully!"
             echo "Docker Image: ${IMAGE_NAME}:${IMAGE_TAG}"
-            echo "=================================="
+            echo "========================================"
         }
 
         failure {
-            echo "=================================="
+            echo "========================================"
             echo "Pipeline Failed!"
-            echo "Check Console Output."
-            echo "=================================="
+            echo "Please check the console output."
+            echo "========================================"
         }
 
         always {
