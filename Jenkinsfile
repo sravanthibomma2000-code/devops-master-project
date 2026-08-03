@@ -39,7 +39,7 @@ pipeline {
                         -Dsonar.projectName=IoT-Platform \
                         -Dsonar.sources=src/main \
                         -Dsonar.java.binaries=target/classes \
-                        -Dsonar.ws.timeout=600
+                        -Dsonar.scanner.socketTimeout=600
                         """
                     }
                 }
@@ -92,24 +92,31 @@ pipeline {
 
         stage('Docker Logout') {
             steps {
-                sh 'docker logout'
+                sh 'docker logout || true'
             }
         }
     }
 
     post {
+
         success {
-            echo "======================================="
-            echo "Pipeline Completed Successfully!"
-            echo "Docker Image: ${IMAGE_NAME}:${IMAGE_TAG}"
-            echo "======================================="
+            script {
+                currentBuild.displayName = "#${BUILD_NUMBER}"
+            }
+
+            echo "=========================================="
+            echo " CI/CD Pipeline Completed Successfully"
+            echo " Docker Image:"
+            echo " ${IMAGE_NAME}:${IMAGE_TAG}"
+            echo " ${IMAGE_NAME}:latest"
+            echo "=========================================="
         }
 
         failure {
-            echo "======================================="
-            echo "Pipeline Failed!"
-            echo "Please check Console Output."
-            echo "======================================="
+            echo "=========================================="
+            echo " Pipeline Failed!"
+            echo "Check Jenkins Console Output."
+            echo "=========================================="
         }
 
         always {
