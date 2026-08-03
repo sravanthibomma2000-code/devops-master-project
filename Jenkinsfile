@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         SCANNER_HOME = tool 'SonarScanner'
-        IMAGE_NAME = 'sravanthibomma2000/iot-platform'
+        IMAGE_NAME = "sravanthibomma2000/iot-platform"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
@@ -38,9 +38,18 @@ pipeline {
                         -Dsonar.projectKey=IoT-Platform \
                         -Dsonar.projectName=IoT-Platform \
                         -Dsonar.sources=src/main \
-                        -Dsonar.java.binaries=target/classes
+                        -Dsonar.java.binaries=target/classes \
+                        -Dsonar.ws.timeout=600
                         """
                     }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -56,7 +65,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Docker Login') {
             steps {
                 withCredentials([
                     usernamePassword(
@@ -65,30 +74,42 @@ pipeline {
                         passwordVariable: 'DOCKER_PASS'
                     )
                 ]) {
-                    sh """
-                    echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
-                    docker push ${IMAGE_NAME}:${IMAGE_TAG}
-                    docker push ${IMAGE_NAME}:latest
-                    docker logout
-                    """
+                    sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    '''
                 }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                sh """
+                docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                docker push ${IMAGE_NAME}:latest
+                """
+            }
+        }
+
+        stage('Docker Logout') {
+            steps {
+                sh 'docker logout'
             }
         }
     }
 
     post {
         success {
-            echo "========================================"
+            echo "======================================="
             echo "Pipeline Completed Successfully!"
             echo "Docker Image: ${IMAGE_NAME}:${IMAGE_TAG}"
-            echo "========================================"
+            echo "======================================="
         }
 
         failure {
-            echo "========================================"
+            echo "======================================="
             echo "Pipeline Failed!"
-            echo "Please check the console output."
-            echo "========================================"
+            echo "Please check Console Output."
+            echo "======================================="
         }
 
         always {
