@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        timestamps()
+    }
+
     tools {
         jdk 'java21'
         maven 'maven3'
@@ -38,8 +42,7 @@ pipeline {
                         -Dsonar.projectKey=IoT-Platform \
                         -Dsonar.projectName=IoT-Platform \
                         -Dsonar.sources=src/main \
-                        -Dsonar.java.binaries=target/classes \
-                        -Dsonar.scanner.socketTimeout=600
+                        -Dsonar.java.binaries=target/classes
                         """
                     }
                 }
@@ -48,7 +51,7 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
-                timeout(time: 10, unit: 'MINUTES') {
+                timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
@@ -105,16 +108,15 @@ pipeline {
             }
 
             echo "=========================================="
-            echo " CI/CD Pipeline Completed Successfully"
-            echo " Docker Image:"
-            echo " ${IMAGE_NAME}:${IMAGE_TAG}"
-            echo " ${IMAGE_NAME}:latest"
+            echo "CI/CD Pipeline Completed Successfully"
+            echo "Docker Image: ${IMAGE_NAME}:${IMAGE_TAG}"
+            echo "Latest Image: ${IMAGE_NAME}:latest"
             echo "=========================================="
         }
 
         failure {
             echo "=========================================="
-            echo " Pipeline Failed!"
+            echo "Pipeline Failed!"
             echo "Check Jenkins Console Output."
             echo "=========================================="
         }
