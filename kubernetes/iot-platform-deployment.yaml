@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: iot-platform
+  namespace: devops
 
 spec:
-  replicas: 2
+  replicas: 1
 
   selector:
     matchLabels:
@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
       - name: iot-platform
-        image: sravanthibomma2000/iot-platform:13
-        imagePullPolicy: Always
+        image: devops/iot-platform:1.0
+        imagePullPolicy: IfNotPresent
+
         ports:
         - containerPort: 8081

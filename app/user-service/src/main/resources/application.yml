@@ -1,12 +1,12 @@
+server:
+  port: 8083
+
 spring:
   application:
-    name: iot-platform
+    name: user-service
 
   config:
     import: optional:configserver:http://config-server:8888
-
-server:
-  port: 8081
 
 eureka:
   client:

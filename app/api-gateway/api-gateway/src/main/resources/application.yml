@@ -16,6 +16,11 @@ spring:
           predicates:
             - Path=/iot/**
 
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/**
+
 eureka:
   client:
     service-url:
@@ -25,6 +30,10 @@ eureka:
     prefer-ip-address: true
 
 management:
+  endpoint:
+    gateway:
+      access: unrestricted
+
   endpoints:
     web:
       exposure:
