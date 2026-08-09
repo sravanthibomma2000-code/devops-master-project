@@ -98,6 +98,28 @@ pipeline {
                 sh 'docker logout || true'
             }
         }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh """
+                echo "Deploying ${IMAGE_NAME}:${IMAGE_TAG} to Kubernetes..."
+
+                kubectl set image deployment/iot-platform \
+                iot-platform=${IMAGE_NAME}:${IMAGE_TAG} \
+                -n devops
+
+                kubectl rollout status deployment/iot-platform \
+                -n devops \
+                --timeout=5m
+
+                echo "Kubernetes deployment successful!"
+
+                kubectl get deployment iot-platform -n devops
+
+                kubectl get pods -n devops -l app=iot-platform
+                """
+            }
+        }
     }
 
     post {
@@ -111,6 +133,7 @@ pipeline {
             echo "CI/CD Pipeline Completed Successfully"
             echo "Docker Image: ${IMAGE_NAME}:${IMAGE_TAG}"
             echo "Latest Image: ${IMAGE_NAME}:latest"
+            echo "Kubernetes Deployment: SUCCESS"
             echo "=========================================="
         }
 
