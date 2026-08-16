@@ -1,0 +1,12 @@
+﻿# Temporary/debug files
+-o
+cm-test.json
+
+# Dashboard backup files
+namespace-dashboard-backup.json
+namespace-dashboard-backup.yaml
+
+# PowerShell / OS files
+*.tmp
+*.log
+Thumbs.db
